@@ -1,0 +1,57 @@
+# ...
+linter:
+    rules:
+        - always_declare_return_types
+        - annotate_overrides
+        - avoid_annotating_with_dynamic
+        - avoid_catches_without_on_clauses
+        - avoid_catching_errors
+        - avoid_equals_and_hash_code_on_mutable_classes
+        - avoid_function_literals_in_foreach_calls
+        - avoid_positional_boolean_parameters
+        - avoid_print # print() の使用を避ける
+        - avoid_private_typedef_functions
+        - avoid_relative_lib_imports
+        - avoid_returning_null
+        - avoid_returning_this
+        - avoid_setters_without_getters
+        - avoid_types_on_closure_parameters
+        - constant_identifier_names
+        - curly_braces_in_flow_control_structures
+        - directives_ordering
+        - file_names
+        - lines_longer_than_80_chars
+        - no_duplicate_case_values
+        - null_closures
+        - omit_local_variable_types
+        - one_member_abstracts
+        - prefer_adjacent_string_concatenation
+        - prefer_collection_literals
+        - prefer_conditional_assignment
+        - prefer_const_constructors
+        - prefer_const_declarations
+        - prefer_contains
+        - prefer_equal_for_default_values
+        - prefer_final_fields
+        - prefer_function_declarations_over_variables
+        - prefer_generic_function_type_aliases
+        - prefer_if_null_operators
+        - prefer_initializing_formals
+        - prefer_interpolation_to_compose_strings
+        - prefer_is_empty
+        - prefer_is_not_empty
+        - prefer_iterable_whereType
+        - prefer_mixin # クラスの継承では extends ではなく mixin を用いた多重継承をする
+        - prefer_single_quotes # "" よりも '' を使用する
+        - prefer_spread_collections
+        - recursive_getters
+        - type_annotate_public_apis
+        - unnecessary_const
+        - unnecessary_lambdas
+        - unnecessary_new
+        - unnecessary_this
+        - use_function_type_syntax_for_parameters
+        - use_rethrow_when_possible
+        - use_setters_to_change_properties
+        - use_to_and_as_if_applicable
+# ...
