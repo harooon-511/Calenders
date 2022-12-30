@@ -74,15 +74,64 @@ class TableCalenderPage extends ConsumerWidget {
               eventLoader: getEventForDay,
               calendarBuilders: CalendarBuilders(
                 markerBuilder: (context, date, events) {
-                  if (events.isNotEmpty && date.isAfter(DateTime.now())) {
-                    return _buildEventsMarker(date, events);
-                  } else if (events.isEmpty && date.isAfter(DateTime.now())) {
-                    return _buildNonEventsMarker(date, events);
+                  if (events.isNotEmpty) {
+                    if (date.isAfter(DateTime.now()) ||
+                        // 日付のみの比較
+                        date.difference(DateTime.now()).inDays == 0 &&
+                            DateTime.now().day == DateTime.now().day) {
+                      return _buildEventsMarker(date, events);
+                    } else {
+                      return const Text(' ');
+                    }
+                  } else if (events.isEmpty) {
+                    if (date.isAfter(DateTime.now()) ||
+                        // 日付のみの比較
+                        date.difference(DateTime.now()).inDays == 0 &&
+                            DateTime.now().day == DateTime.now().day) {
+                      return _buildNonEventsMarker(date, events);
+                    } else {
+                      return const Text(' ');
+                    }
                   }
-                  return const Text('done');
+                  return const Text(' ');
+                },
+                defaultBuilder: (context, day, focusedDay) {
+                  return CalenderStyle(day, Colors.black87);
+                },
+                dowBuilder: (context, day) {
+                  final locale = Localizations.localeOf(context).languageCode;
+                  final dowText = const DaysOfWeekStyle()
+                          .dowTextFormatter
+                          ?.call(day, locale) ??
+                      DateFormat.E(locale).format(day);
+
+                  return DowStyle(dowText);
+                },
+                disabledBuilder: (context, day, focusedDay) {
+                  return CalenderStyle(day, Colors.grey);
+                },
+                // 前の月末で今月に出てきてる日付とか
+                outsideBuilder: (context, day, focusedDay) {
+                  return CalenderStyle(day, Colors.grey);
+                },
+                todayBuilder: (context, day, focusedDay) {
+                  return AnimatedContainer(
+                    duration: const Duration(milliseconds: 250),
+                    margin: EdgeInsets.zero,
+                    decoration: BoxDecoration(
+                      color: Colors.orange[200],
+                    ),
+                    alignment: Alignment.center,
+                    child: Text(
+                      day.day.toString(),
+                      style: const TextStyle(
+                        color: Colors.black87,
+                      ),
+                    ),
+                  );
                 },
               ),
-            )
+            ),
           ],
         ),
       ),
@@ -123,6 +172,39 @@ Widget _buildNonEventsMarker(DateTime date, List events) {
       ),
       width: 32.0,
       height: 32.0,
+    ),
+  );
+}
+
+Widget CalenderStyle(DateTime day, Color color) {
+  return AnimatedContainer(
+    duration: const Duration(milliseconds: 250),
+    margin: EdgeInsets.zero,
+    decoration: BoxDecoration(
+      border: Border.all(
+        color: Colors.grey[400]!,
+        width: 0.5,
+      ),
+    ),
+    alignment: Alignment.center,
+    child: Text(
+      day.day.toString(),
+      style: TextStyle(color: color),
+    ),
+  );
+}
+
+Widget DowStyle(String date) {
+  return AnimatedContainer(
+    duration: const Duration(milliseconds: 250),
+    margin: EdgeInsets.zero,
+    decoration: BoxDecoration(color: Colors.grey[600]),
+    alignment: Alignment.center,
+    child: Text(
+      date.toString(),
+      style: const TextStyle(
+        color: Colors.white,
+      ),
     ),
   );
 }
