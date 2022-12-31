@@ -6,6 +6,8 @@ import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 import 'package:table_calendar/table_calendar.dart';
 
+import '../style.dart';
+
 class DatePickerPage extends ConsumerWidget {
   const DatePickerPage({super.key});
 
@@ -115,49 +117,14 @@ class DatePickerPage extends ConsumerWidget {
   }
 }
 
-Widget CalenderStyle(DateTime day, Color color) {
-  return AnimatedContainer(
-    duration: const Duration(milliseconds: 250),
-    margin: EdgeInsets.zero,
-    decoration: BoxDecoration(
-      border: Border.all(
-        color: Colors.grey[400]!,
-        width: 0.5,
-      ),
-    ),
-    alignment: Alignment.center,
-    child: Text(
-      day.day.toString(),
-      style: TextStyle(color: color),
-    ),
-  );
-}
-
-Widget DowStyle(String date) {
-  return AnimatedContainer(
-    duration: const Duration(milliseconds: 250),
-    margin: EdgeInsets.zero,
-    decoration: BoxDecoration(color: Colors.grey[600]),
-    alignment: Alignment.center,
-    // 高さの設定方法がわからない
-    height: 40,
-    child: Text(
-      date.toString(),
-      style: const TextStyle(
-        color: Colors.white,
-      ),
-    ),
-  );
-}
-
 // ignore: avoid_annotating_with_dynamic
 Widget ChosenDateText(dynamic focusOnDay) {
   final format = DateFormat('y/M/d');
   if (focusOnDay.rangeStart != null) {
     if (focusOnDay.rangeEnd != null) {
       return Text(
-          '${format.format(focusOnDay.rangeStart)
-          .toString()} 〜 ${format.format(focusOnDay.rangeEnd).toString()}');
+          // ignore: lines_longer_than_80_chars
+          '${format.format(focusOnDay.rangeStart).toString()} 〜 ${format.format(focusOnDay.rangeEnd).toString()}');
     } else {
       return Text('${format.format(focusOnDay.rangeStart).toString()}');
     }
