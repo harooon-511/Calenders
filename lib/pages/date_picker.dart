@@ -14,7 +14,7 @@ class DatePickerPage extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final focusOnDay = ref.watch(focusOnDayProvider);
-    // final _selectedDay = ref.watch(selectedDayProvider);
+
     var _calendarFormat = CalendarFormat.month;
     var _rangeSelectionMode = RangeSelectionMode.toggledOn;
     debugPrint('スタート');
@@ -52,7 +52,7 @@ class DatePickerPage extends ConsumerWidget {
               onDaySelected: (selectedDay, focusedDay) {
                 if (!isSameDay(focusOnDay.selectedDay, selectedDay)) {
                   focusOnDay.updateSelectedDay(selectedDay);
-                  focusOnDay.updateFocusedDay(focusedDay);
+                  focusOnDay.updateFocusedDay(selectedDay);
                   focusOnDay.updateRangeStart(null);
                   focusOnDay.updateRangeEnd(null);
                   _rangeSelectionMode = RangeSelectionMode.toggledOff;
@@ -71,22 +71,7 @@ class DatePickerPage extends ConsumerWidget {
                 defaultBuilder: (context, day, focusedDay) {
                   return CalenderStyle(day, Colors.black87);
                 },
-                dowBuilder: (context, day) {
-                  final locale = Localizations.localeOf(context).languageCode;
-                  final dowText = const DaysOfWeekStyle()
-                          .dowTextFormatter
-                          ?.call(day, locale) ??
-                      DateFormat.E(locale).format(day);
-
-                  return DowStyle(dowText);
-                },
-                disabledBuilder: (context, day, focusedDay) {
-                  return CalenderStyle(day, Colors.grey);
-                },
-                // 前の月末で今月に出てきてる日付とか
-                outsideBuilder: (context, day, focusedDay) {
-                  return CalenderStyle(day, Colors.grey);
-                },
+                // なぜかここの指示が通らない
                 todayBuilder: (context, day, focusedDay) {
                   return AnimatedContainer(
                     duration: const Duration(milliseconds: 250),
@@ -104,6 +89,22 @@ class DatePickerPage extends ConsumerWidget {
                       ),
                     ),
                   );
+                },
+                dowBuilder: (context, day) {
+                  final locale = Localizations.localeOf(context).languageCode;
+                  final dowText = const DaysOfWeekStyle()
+                          .dowTextFormatter
+                          ?.call(day, locale) ??
+                      DateFormat.E(locale).format(day);
+
+                  return DowStyle(dowText);
+                },
+                disabledBuilder: (context, day, focusedDay) {
+                  return CalenderStyle(day, Colors.grey);
+                },
+                // 前の月末で今月に出てきてる日付とか
+                outsideBuilder: (context, day, focusedDay) {
+                  return CalenderStyle(day, Colors.grey);
                 },
               ),
             ),
