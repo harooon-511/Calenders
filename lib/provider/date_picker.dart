@@ -9,6 +9,7 @@ class selectedDayController extends ChangeNotifier {
   DateTime focusedDay = DateTime.now();
   DateTime? rangeStart = null;
   DateTime? rangeEnd = null;
+  List pickedDateList = [];
 
   void updateSelectedDay(DateTime value) {
     selectedDay = value;
@@ -27,6 +28,12 @@ class selectedDayController extends ChangeNotifier {
 
   void updateRangeEnd(DateTime? value) {
     rangeEnd = value;
+    notifyListeners();
+  }
+
+  void generatePickedDateList(List list) {
+    pickedDateList = [];
+    pickedDateList.addAll(list);
     notifyListeners();
   }
 }

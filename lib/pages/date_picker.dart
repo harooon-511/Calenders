@@ -123,11 +123,29 @@ Widget ChosenDateText(dynamic focusOnDay) {
   final format = DateFormat('y/M/d');
   if (focusOnDay.rangeStart != null) {
     if (focusOnDay.rangeEnd != null) {
-      return Text(
-          // ignore: lines_longer_than_80_chars
-          '${format.format(focusOnDay.rangeStart).toString()} 〜 ${format.format(focusOnDay.rangeEnd).toString()}');
+      final daysLength =
+          focusOnDay.rangeEnd.difference(focusOnDay.rangeStart).inDays + 1;
+      final dateList = List<DateTime>.generate(
+          daysLength, (i) => focusOnDay.rangeStart.add(Duration(days: i)));
+      focusOnDay.generatePickedDateList(dateList);
+      return Column(
+        children: [
+          Text(
+              // ignore: lines_longer_than_80_chars
+              '${format.format(focusOnDay.rangeStart).toString()} 〜 ${format.format(focusOnDay.rangeEnd).toString()}'),
+          // 選択した範囲のdatetimeを全て取り出してリストに格納した
+          Text(focusOnDay.pickedDateList.toString())
+        ],
+      );
     } else {
-      return Text('${format.format(focusOnDay.rangeStart).toString()}');
+      final day = <DateTime>[focusOnDay.rangeStart];
+      focusOnDay.generatePickedDateList(day);
+      return Column(
+        children: [
+          Text('${format.format(focusOnDay.rangeStart).toString()}'),
+          Text(focusOnDay.pickedDateList.toString())
+        ],
+      );
     }
   } else {
     return const Text('日付を選択してください');
