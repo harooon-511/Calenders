@@ -1,8 +1,10 @@
 import 'dart:collection';
 
 import 'package:calender/provider/table_calender.dart';
+import 'package:calender/routes.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 import 'package:table_calendar/table_calendar.dart';
 
@@ -62,7 +64,7 @@ class TableCalenderPage extends ConsumerWidget {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
-            const Text('Welcome!'),
+            const Text('アイテム詳細マスタ/ウエディングドレス&スーツ'),
             TableCalendar(
               locale: 'ja_JP',
               firstDay: DateTime.utc(2010, 10, 16),
@@ -132,6 +134,9 @@ class TableCalenderPage extends ConsumerWidget {
                 },
               ),
             ),
+            ElevatedButton(
+                onPressed: () => context.go(Routes.datePicker),
+                child: const Text('Choose date'))
           ],
         ),
       ),
@@ -200,6 +205,8 @@ Widget DowStyle(String date) {
     margin: EdgeInsets.zero,
     decoration: BoxDecoration(color: Colors.grey[600]),
     alignment: Alignment.center,
+    // 高さの設定方法がわからない
+    height: 40,
     child: Text(
       date.toString(),
       style: const TextStyle(
@@ -208,3 +215,6 @@ Widget DowStyle(String date) {
     ),
   );
 }
+
+// のせたい機能:
+// 予約可能状況は3ヶ月先までしか見れない機能
