@@ -19,8 +19,8 @@ class TableCalenderPage extends ConsumerWidget {
     // (フィルタリングはrepositoryで行う)
     var _eventsList = ref.watch(eventsListProvider).eventsList;
 
-    List weddingDress = ref.read(eventsListProvider).weddingDress;
-    List suits = ref.read(eventsListProvider).suits;
+    List cross = ref.read(eventsListProvider).cross;
+    List triangle = ref.read(eventsListProvider).triangle;
 
     // String→DateTime変換
     final _dateFormatter = DateFormat('y-M-d');
@@ -35,13 +35,13 @@ class TableCalenderPage extends ConsumerWidget {
       return result!;
     }
 
-    for (var i = 0; i < weddingDress.length; i++) {
-      final element = getDatetime(weddingDress[i]);
-      ref.watch(eventsListProvider).eventsList[element] = ['試着'];
+    for (var i = 0; i < triangle.length; i++) {
+      final element = getDatetime(triangle[i]);
+      ref.watch(eventsListProvider).eventsList[element] = ['triangle'];
     }
-    for (var i = 0; i < suits.length; i++) {
-      final element = getDatetime(suits[i]);
-      ref.watch(eventsListProvider).eventsList[element] = ['試着'];
+    for (var i = 0; i < cross.length; i++) {
+      final element = getDatetime(cross[i]);
+      ref.watch(eventsListProvider).eventsList[element] = ['cross'];
     }
 
     // DateTime型から20210930の8桁のint型へ変換
@@ -66,7 +66,7 @@ class TableCalenderPage extends ConsumerWidget {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
-            const Text('アイテム詳細マスタ/ウエディングドレス&スーツ'),
+            const Text('アイテム詳細マスタ/マル&三角&バツ'),
             TableCalendar(
               locale: 'ja_JP',
               firstDay: DateTime.utc(2010, 10, 16),
@@ -79,20 +79,31 @@ class TableCalenderPage extends ConsumerWidget {
               calendarBuilders: CalendarBuilders(
                 markerBuilder: (context, date, events) {
                   if (events.isNotEmpty) {
-                    if (date.isAfter(DateTime.now()) ||
-                        // 日付のみの比較
-                        date.difference(DateTime.now()).inDays == 0 &&
-                            DateTime.now().day == DateTime.now().day) {
-                      return _buildEventsMarker(date, events);
-                    } else {
-                      return const Text(' ');
+                    if (events[0] == 'cross') {
+                      if (date.isAfter(DateTime.now()) ||
+                          // 日付のみの比較
+                          date.difference(DateTime.now()).inDays == 0 &&
+                              DateTime.now().day == DateTime.now().day) {
+                        return _buildBookedMarker(date, events);
+                      } else {
+                        return const Text(' ');
+                      }
+                    } else if (events[0] == 'triangle') {
+                      if (date.isAfter(DateTime.now()) ||
+                          // 日付のみの比較
+                          date.difference(DateTime.now()).inDays == 0 &&
+                              DateTime.now().day == DateTime.now().day) {
+                        return _buildDifferentSizeMarker(date, events);
+                      } else {
+                        return const Text(' ');
+                      }
                     }
                   } else if (events.isEmpty) {
                     if (date.isAfter(DateTime.now()) ||
                         // 日付のみの比較
                         date.difference(DateTime.now()).inDays == 0 &&
                             DateTime.now().day == DateTime.now().day) {
-                      return _buildNonEventsMarker(date, events);
+                      return _buildAvairableMarker(date, events);
                     } else {
                       return const Text(' ');
                     }
@@ -146,7 +157,7 @@ class TableCalenderPage extends ConsumerWidget {
   }
 }
 
-Widget _buildEventsMarker(DateTime date, List events) {
+Widget _buildBookedMarker(DateTime date, List events) {
   return Positioned(
     right: 12,
     bottom: 10,
@@ -164,7 +175,7 @@ Widget _buildEventsMarker(DateTime date, List events) {
   );
 }
 
-Widget _buildNonEventsMarker(DateTime date, List events) {
+Widget _buildAvairableMarker(DateTime date, List events) {
   return Positioned(
     right: 12,
     bottom: 10,
@@ -183,5 +194,31 @@ Widget _buildNonEventsMarker(DateTime date, List events) {
   );
 }
 
-// のせたい機能:
-// 予約可能状況は3ヶ月先までしか見れない機能
+Widget _buildDifferentSizeMarker(DateTime date, List events) {
+  return Positioned(
+    right: 12,
+    bottom: 10,
+    child: Container(
+      width: 32.0,
+      height: 32.0,
+      child: const Center(
+        child: Icon(
+          Icons.change_history,
+          color: Colors.grey,
+          size: 40.0,
+        ),
+      ),
+    ),
+  );
+}
+
+Widget Reputation(DateTime date, Widget widget) {
+  if (date.isAfter(DateTime.now()) ||
+      // 日付のみの比較
+      date.difference(DateTime.now()).inDays == 0 &&
+          DateTime.now().day == DateTime.now().day) {
+    return widget;
+  } else {
+    return const Text(' ');
+  }
+}
