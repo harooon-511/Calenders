@@ -141,25 +141,22 @@ class TableCalenderPage extends ConsumerWidget {
                     }
                     return const Text(' ');
                   },
-                  // 指示通らない
-                  // todayBuilder: (context, day, focusedDay) {
-                  //   return AnimatedContainer(
-                  //     duration: const Duration(milliseconds: 250),
-                  //     margin: EdgeInsets.zero,
-                  //     decoration: BoxDecoration(
-                  //       border: Border.all(
-                  //         color: Colors.orange,
-                  //       ),
-                  //     ),
-                  //     alignment: Alignment.center,
-                  //     child: Text(
-                  //       day.day.toString(),
-                  //       style: const TextStyle(
-                  //         color: Colors.black87,
-                  //       ),
-                  //     ),
-                  //   );
-                  // },
+                  selectedBuilder: (context, day, focusedDay) {
+                    return AnimatedContainer(
+                      duration: const Duration(milliseconds: 250),
+                      margin: EdgeInsets.zero,
+                      decoration: const BoxDecoration(
+                        color: Color(0xffFFA800),
+                      ),
+                      alignment: Alignment.center,
+                      child: Text(
+                        day.day.toString(),
+                        style: const TextStyle(
+                          color: Colors.black87,
+                        ),
+                      ),
+                    );
+                  },
                   dowBuilder: (context, day) {
                     final locale = Localizations.localeOf(context).languageCode;
                     final dowText = const DaysOfWeekStyle()
