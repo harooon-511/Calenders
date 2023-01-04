@@ -55,6 +55,21 @@ Widget DowStyle(String date) {
   );
 }
 
+Widget SelectedDayStyle(DateTime date) {
+  return AnimatedContainer(
+    duration: const Duration(milliseconds: 250),
+    margin: EdgeInsets.zero,
+    decoration: const BoxDecoration(
+      color: Color(0xffFFA800),
+    ),
+    alignment: Alignment.center,
+    child: Text(
+      date.day.toString(),
+      style: const TextStyle(color: MyColors.black, fontSize: 20),
+    ),
+  );
+}
+
 const calenderHeaderStyle = HeaderStyle(
   decoration: BoxDecoration(
       color: MyColors.background1,

@@ -1,6 +1,5 @@
 import 'dart:collection';
 
-// import 'package:calender/colors.dart';
 import 'package:calender/provider/date_picker.dart';
 import 'package:calender/provider/table_calender.dart';
 import 'package:calender/routes.dart';
@@ -9,6 +8,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 import 'package:table_calendar/table_calendar.dart';
+import '../colors.dart';
 import '../style.dart';
 
 class TableCalenderPage extends ConsumerWidget {
@@ -103,9 +103,9 @@ class TableCalenderPage extends ConsumerWidget {
                 calendarBuilders: CalendarBuilders(
                   defaultBuilder: (context, day, focusedDay) {
                     if (day.isBefore(DateTime.now())) {
-                      return DefaultPastStyle(day, Colors.black87);
+                      return DefaultPastStyle(day, MyColors.black);
                     } else {
-                      return DefaultStyle(day, Colors.black87);
+                      return DefaultStyle(day, MyColors.black);
                     }
                   },
                   markerBuilder: (context, date, events) {
@@ -142,20 +142,7 @@ class TableCalenderPage extends ConsumerWidget {
                     return const Text(' ');
                   },
                   selectedBuilder: (context, day, focusedDay) {
-                    return AnimatedContainer(
-                      duration: const Duration(milliseconds: 250),
-                      margin: EdgeInsets.zero,
-                      decoration: const BoxDecoration(
-                        color: Color(0xffFFA800),
-                      ),
-                      alignment: Alignment.center,
-                      child: Text(
-                        day.day.toString(),
-                        style: const TextStyle(
-                          color: Colors.black87,
-                        ),
-                      ),
-                    );
+                    return SelectedDayStyle(day);
                   },
                   dowBuilder: (context, day) {
                     final locale = Localizations.localeOf(context).languageCode;
@@ -163,7 +150,6 @@ class TableCalenderPage extends ConsumerWidget {
                             .dowTextFormatter
                             ?.call(day, locale) ??
                         DateFormat.E(locale).format(day);
-
                     return DowStyle(dowText);
                   },
                   disabledBuilder: (context, day, focusedDay) {
@@ -172,6 +158,9 @@ class TableCalenderPage extends ConsumerWidget {
                   // 前の月末で今月に出てきてる日付とか
                   outsideBuilder: (context, day, focusedDay) {
                     return DefaultPastStyle(day, Colors.grey);
+                  },
+                  todayBuilder: (context, day, focusedDay) {
+                    return DefaultStyle(day, MyColors.black);
                   },
                 ),
               ),
