@@ -34,6 +34,7 @@ class DatePickerPage extends ConsumerWidget {
           children: <Widget>[
             const Text('日付選択'),
             ChosenDateText(focusOnDay),
+            // Expanded(child:
             SizedBox(
               height: 400,
               width: 350,
@@ -70,29 +71,33 @@ class DatePickerPage extends ConsumerWidget {
                   _rangeSelectionMode = RangeSelectionMode.toggledOn;
                 },
                 onPageChanged: focusOnDay.updateFocusedDay,
+                startingDayOfWeek: StartingDayOfWeek.monday,
                 calendarBuilders: CalendarBuilders(
                   defaultBuilder: (context, day, focusedDay) {
-                    return CalenderStyle(day, Colors.black87);
+                    if (day.isBefore(DateTime.now())) {
+                      return DefaultPastStyle(day, Colors.black87);
+                    } else {
+                      return DefaultStyle(day, Colors.black87);
+                    }
                   },
-                  // なぜかここの指示が通らない
-                  todayBuilder: (context, day, focusedDay) {
-                    return AnimatedContainer(
-                      duration: const Duration(milliseconds: 250),
-                      margin: EdgeInsets.zero,
-                      decoration: BoxDecoration(
-                        border: Border.all(
-                          color: Colors.orange,
-                        ),
-                      ),
-                      alignment: Alignment.center,
-                      child: Text(
-                        day.day.toString(),
-                        style: const TextStyle(
-                          color: Colors.black87,
-                        ),
-                      ),
-                    );
-                  },
+                  // todayBuilder: (context, day, focusedDay) {
+                  //   return AnimatedContainer(
+                  //     duration: const Duration(milliseconds: 250),
+                  //     margin: EdgeInsets.zero,
+                  //     decoration: BoxDecoration(
+                  //       border: Border.all(
+                  //         color: Colors.orange,
+                  //       ),
+                  //     ),
+                  //     alignment: Alignment.center,
+                  //     child: Text(
+                  //       day.day.toString(),
+                  //       style: const TextStyle(
+                  //         color: Colors.black87,
+                  //       ),
+                  //     ),
+                  //   );
+                  // },
                   dowBuilder: (context, day) {
                     final locale = Localizations.localeOf(context).languageCode;
                     final dowText = const DaysOfWeekStyle()
@@ -103,15 +108,16 @@ class DatePickerPage extends ConsumerWidget {
                     return DowStyle(dowText);
                   },
                   disabledBuilder: (context, day, focusedDay) {
-                    return CalenderStyle(day, Colors.grey);
+                    return DefaultPastStyle(day, Colors.grey);
                   },
                   // 前の月末で今月に出てきてる日付とか
                   outsideBuilder: (context, day, focusedDay) {
-                    return CalenderStyle(day, Colors.grey);
+                    return DefaultPastStyle(day, Colors.grey);
                   },
                 ),
               ),
             ),
+            // ),
             ElevatedButton(
                 onPressed: () => context.go(Routes.tableCalender),
                 child: const Text('Check Avalability'))

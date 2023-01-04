@@ -1,5 +1,6 @@
 import 'dart:collection';
 
+// import 'package:calender/colors.dart';
 import 'package:calender/provider/date_picker.dart';
 import 'package:calender/provider/table_calender.dart';
 import 'package:calender/routes.dart';
@@ -69,8 +70,9 @@ class TableCalenderPage extends ConsumerWidget {
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
             const Text('アイテム詳細マスタ/マル&三角&バツ'),
+            // Expanded(child:
             SizedBox(
-              height: 400,
+              height: 420,
               width: 350,
               child: TableCalendar(
                 locale: 'ja_JP',
@@ -82,6 +84,7 @@ class TableCalenderPage extends ConsumerWidget {
                 rowHeight: 50,
                 eventLoader: getEventForDay,
                 calendarFormat: _calendarFormat,
+                startingDayOfWeek: StartingDayOfWeek.monday,
                 selectedDayPredicate: (day) {
                   return isSameDay(
                     day,
@@ -99,7 +102,11 @@ class TableCalenderPage extends ConsumerWidget {
                 onPageChanged: focusOnDay.updateFocusedDay,
                 calendarBuilders: CalendarBuilders(
                   defaultBuilder: (context, day, focusedDay) {
-                    return CalenderStyle(day, Colors.black87);
+                    if (day.isBefore(DateTime.now())) {
+                      return DefaultPastStyle(day, Colors.black87);
+                    } else {
+                      return DefaultStyle(day, Colors.black87);
+                    }
                   },
                   markerBuilder: (context, date, events) {
                     if (events.isNotEmpty) {
@@ -163,15 +170,16 @@ class TableCalenderPage extends ConsumerWidget {
                     return DowStyle(dowText);
                   },
                   disabledBuilder: (context, day, focusedDay) {
-                    return CalenderStyle(day, Colors.grey);
+                    return DefaultPastStyle(day, Colors.grey);
                   },
                   // 前の月末で今月に出てきてる日付とか
                   outsideBuilder: (context, day, focusedDay) {
-                    return CalenderStyle(day, Colors.grey);
+                    return DefaultPastStyle(day, Colors.grey);
                   },
                 ),
               ),
             ),
+            // ),
             ElevatedButton(
                 onPressed: () => context.go(Routes.datePicker),
                 child: const Text('Choose date'))
@@ -184,16 +192,13 @@ class TableCalenderPage extends ConsumerWidget {
 
 Widget _buildBookedMarker(DateTime date, List events) {
   return Positioned(
-    right: 12,
-    bottom: 10,
     child: Container(
-      width: 32.0,
-      height: 32.0,
       child: const Center(
         child: Icon(
           Icons.close,
+          // color: MyColors.secondary2,
           color: Colors.blue,
-          size: 36.0,
+          size: 50.0,
         ),
       ),
     ),
@@ -202,35 +207,26 @@ Widget _buildBookedMarker(DateTime date, List events) {
 
 Widget _buildAvairableMarker(DateTime date, List events) {
   return Positioned(
-    right: 12,
-    bottom: 10,
     child: Container(
-      // duration: const Duration(milliseconds: 300),
-      decoration: BoxDecoration(
-        shape: BoxShape.circle,
-        border: Border.all(
-          color: Colors.red,
-          width: 2,
+      child: const Center(
+        child: Icon(
+          Icons.radio_button_unchecked,
+          color: Color(0xffFF6E6E),
+          size: 50.0,
         ),
       ),
-      width: 32.0,
-      height: 32.0,
     ),
   );
 }
 
 Widget _buildDifferentSizeMarker(DateTime date, List events) {
   return Positioned(
-    right: 12,
-    bottom: 10,
     child: Container(
-      width: 32.0,
-      height: 32.0,
       child: const Center(
         child: Icon(
           Icons.change_history,
-          color: Colors.grey,
-          size: 40.0,
+          color: Color(0xff70707080),
+          size: 50.0,
         ),
       ),
     ),
