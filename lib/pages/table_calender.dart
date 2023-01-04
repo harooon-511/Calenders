@@ -95,9 +95,9 @@ class TableCalenderPage extends ConsumerWidget {
                   if (!isSameDay(focusOnDay.selectedDay, selectedDay)) {
                     focusOnDay.updateSelectedDay(selectedDay);
                     focusOnDay.updateFocusedDay(selectedDay);
-                    focusOnDay.updateRangeStart(null);
-                    focusOnDay.updateRangeEnd(null);
                   }
+                  debugPrint('Happy!');
+                  debugPrint(focusOnDay.selectedDay.toString());
                 },
                 onPageChanged: focusOnDay.updateFocusedDay,
                 calendarBuilders: CalendarBuilders(
