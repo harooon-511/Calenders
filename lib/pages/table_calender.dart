@@ -1,5 +1,6 @@
 import 'dart:collection';
 
+import 'package:calender/provider/date_picker.dart';
 import 'package:calender/provider/table_calender.dart';
 import 'package:calender/routes.dart';
 import 'package:flutter/material.dart';
@@ -7,7 +8,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 import 'package:table_calendar/table_calendar.dart';
-
 import '../style.dart';
 
 class TableCalenderPage extends ConsumerWidget {
@@ -15,6 +15,8 @@ class TableCalenderPage extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final focusOnDay = ref.watch(focusOnDayProvider);
+    var _calendarFormat = CalendarFormat.month;
     // 実際はList Itemなどで作成し、APIから選択して持ってきたアイテムの予約データのみを取ってこれる
     // (フィルタリングはrepositoryで行う)
     var _eventsList = ref.watch(eventsListProvider).eventsList;
@@ -67,84 +69,107 @@ class TableCalenderPage extends ConsumerWidget {
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
             const Text('アイテム詳細マスタ/マル&三角&バツ'),
-            TableCalendar(
-              locale: 'ja_JP',
-              firstDay: DateTime.utc(2010, 10, 16),
-              lastDay: DateTime.utc(2030, 3, 14),
-              focusedDay: DateTime.now(),
-              headerStyle: const HeaderStyle(
-                formatButtonVisible: false,
-              ),
-              eventLoader: getEventForDay,
-              calendarBuilders: CalendarBuilders(
-                markerBuilder: (context, date, events) {
-                  if (events.isNotEmpty) {
-                    if (events[0] == 'cross') {
-                      if (date.isAfter(DateTime.now()) ||
-                          // 日付のみの比較
-                          date.difference(DateTime.now()).inDays == 0 &&
-                              DateTime.now().day == DateTime.now().day) {
-                        return _buildBookedMarker(date, events);
-                      } else {
-                        return const Text(' ');
-                      }
-                    } else if (events[0] == 'triangle') {
-                      if (date.isAfter(DateTime.now()) ||
-                          // 日付のみの比較
-                          date.difference(DateTime.now()).inDays == 0 &&
-                              DateTime.now().day == DateTime.now().day) {
-                        return _buildDifferentSizeMarker(date, events);
-                      } else {
-                        return const Text(' ');
-                      }
-                    }
-                  } else if (events.isEmpty) {
-                    if (date.isAfter(DateTime.now()) ||
-                        // 日付のみの比較
-                        date.difference(DateTime.now()).inDays == 0 &&
-                            DateTime.now().day == DateTime.now().day) {
-                      return _buildAvairableMarker(date, events);
-                    } else {
-                      return const Text(' ');
-                    }
-                  }
-                  return const Text(' ');
-                },
-                defaultBuilder: (context, day, focusedDay) {
-                  return CalenderStyle(day, Colors.black87);
-                },
-                dowBuilder: (context, day) {
-                  final locale = Localizations.localeOf(context).languageCode;
-                  final dowText = const DaysOfWeekStyle()
-                          .dowTextFormatter
-                          ?.call(day, locale) ??
-                      DateFormat.E(locale).format(day);
-
-                  return DowStyle(dowText);
-                },
-                disabledBuilder: (context, day, focusedDay) {
-                  return CalenderStyle(day, Colors.grey);
-                },
-                // 前の月末で今月に出てきてる日付とか
-                outsideBuilder: (context, day, focusedDay) {
-                  return CalenderStyle(day, Colors.grey);
-                },
-                todayBuilder: (context, day, focusedDay) {
-                  return AnimatedContainer(
-                    duration: const Duration(milliseconds: 250),
-                    margin: EdgeInsets.zero,
-                    decoration: BoxDecoration(
-                      color: Colors.orange[200],
-                    ),
-                    alignment: Alignment.center,
-                    child: Text(
-                      day.day.toString(),
-                      style: const TextStyle(
-                        color: Colors.black87,
-                      ),
-                    ),
+            SizedBox(
+              height: 400,
+              width: 350,
+              child: TableCalendar(
+                locale: 'ja_JP',
+                firstDay: DateTime.utc(2010, 10, 16),
+                lastDay: DateTime.utc(2030, 3, 14),
+                focusedDay: focusOnDay.focusedDay,
+                headerStyle: calenderHeaderStyle,
+                daysOfWeekHeight: 50,
+                rowHeight: 50,
+                eventLoader: getEventForDay,
+                calendarFormat: _calendarFormat,
+                selectedDayPredicate: (day) {
+                  return isSameDay(
+                    day,
+                    focusOnDay.selectedDay,
                   );
                 },
+                onDaySelected: (selectedDay, focusedDay) {
+                  if (!isSameDay(focusOnDay.selectedDay, selectedDay)) {
+                    focusOnDay.updateSelectedDay(selectedDay);
+                    focusOnDay.updateFocusedDay(selectedDay);
+                    focusOnDay.updateRangeStart(null);
+                    focusOnDay.updateRangeEnd(null);
+                  }
+                },
+                onPageChanged: focusOnDay.updateFocusedDay,
+                calendarBuilders: CalendarBuilders(
+                  defaultBuilder: (context, day, focusedDay) {
+                    return CalenderStyle(day, Colors.black87);
+                  },
+                  markerBuilder: (context, date, events) {
+                    if (events.isNotEmpty) {
+                      if (events[0] == 'cross') {
+                        if (date.isAfter(DateTime.now()) ||
+                            // 日付のみの比較
+                            date.difference(DateTime.now()).inDays == 0 &&
+                                DateTime.now().day == DateTime.now().day) {
+                          return _buildBookedMarker(date, events);
+                        } else {
+                          return const Text(' ');
+                        }
+                      } else if (events[0] == 'triangle') {
+                        if (date.isAfter(DateTime.now()) ||
+                            // 日付のみの比較
+                            date.difference(DateTime.now()).inDays == 0 &&
+                                DateTime.now().day == DateTime.now().day) {
+                          return _buildDifferentSizeMarker(date, events);
+                        } else {
+                          return const Text(' ');
+                        }
+                      }
+                    } else if (events.isEmpty) {
+                      if (date.isAfter(DateTime.now()) ||
+                          // 日付のみの比較
+                          date.difference(DateTime.now()).inDays == 0 &&
+                              DateTime.now().day == DateTime.now().day) {
+                        return _buildAvairableMarker(date, events);
+                      } else {
+                        return const Text(' ');
+                      }
+                    }
+                    return const Text(' ');
+                  },
+                  // 指示通らない
+                  // todayBuilder: (context, day, focusedDay) {
+                  //   return AnimatedContainer(
+                  //     duration: const Duration(milliseconds: 250),
+                  //     margin: EdgeInsets.zero,
+                  //     decoration: BoxDecoration(
+                  //       border: Border.all(
+                  //         color: Colors.orange,
+                  //       ),
+                  //     ),
+                  //     alignment: Alignment.center,
+                  //     child: Text(
+                  //       day.day.toString(),
+                  //       style: const TextStyle(
+                  //         color: Colors.black87,
+                  //       ),
+                  //     ),
+                  //   );
+                  // },
+                  dowBuilder: (context, day) {
+                    final locale = Localizations.localeOf(context).languageCode;
+                    final dowText = const DaysOfWeekStyle()
+                            .dowTextFormatter
+                            ?.call(day, locale) ??
+                        DateFormat.E(locale).format(day);
+
+                    return DowStyle(dowText);
+                  },
+                  disabledBuilder: (context, day, focusedDay) {
+                    return CalenderStyle(day, Colors.grey);
+                  },
+                  // 前の月末で今月に出てきてる日付とか
+                  outsideBuilder: (context, day, focusedDay) {
+                    return CalenderStyle(day, Colors.grey);
+                  },
+                ),
               ),
             ),
             ElevatedButton(

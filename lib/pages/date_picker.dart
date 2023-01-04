@@ -34,78 +34,82 @@ class DatePickerPage extends ConsumerWidget {
           children: <Widget>[
             const Text('日付選択'),
             ChosenDateText(focusOnDay),
-            TableCalendar(
-              locale: 'ja_JP',
-              firstDay: DateTime.utc(2010, 10, 16),
-              lastDay: DateTime.utc(2030, 3, 14),
-              focusedDay: focusOnDay.focusedDay,
-              headerStyle: const HeaderStyle(
-                formatButtonVisible: false,
-              ),
-              calendarFormat: _calendarFormat,
-              selectedDayPredicate: (day) {
-                return isSameDay(
-                  day,
-                  focusOnDay.selectedDay,
-                );
-              },
-              onDaySelected: (selectedDay, focusedDay) {
-                if (!isSameDay(focusOnDay.selectedDay, selectedDay)) {
-                  focusOnDay.updateSelectedDay(selectedDay);
-                  focusOnDay.updateFocusedDay(selectedDay);
-                  focusOnDay.updateRangeStart(null);
-                  focusOnDay.updateRangeEnd(null);
-                  _rangeSelectionMode = RangeSelectionMode.toggledOff;
-                }
-              },
-              rangeSelectionMode: _rangeSelectionMode,
-              rangeStartDay: focusOnDay.rangeStart,
-              rangeEndDay: focusOnDay.rangeEnd,
-              onRangeSelected: (start, end, focusedDay) {
-                focusOnDay.updateRangeStart(start);
-                focusOnDay.updateRangeEnd(end);
-                _rangeSelectionMode = RangeSelectionMode.toggledOn;
-              },
-              onPageChanged: focusOnDay.updateFocusedDay,
-              calendarBuilders: CalendarBuilders(
-                defaultBuilder: (context, day, focusedDay) {
-                  return CalenderStyle(day, Colors.black87);
-                },
-                // なぜかここの指示が通らない
-                todayBuilder: (context, day, focusedDay) {
-                  return AnimatedContainer(
-                    duration: const Duration(milliseconds: 250),
-                    margin: EdgeInsets.zero,
-                    decoration: BoxDecoration(
-                      border: Border.all(
-                        color: Colors.orange,
-                      ),
-                    ),
-                    alignment: Alignment.center,
-                    child: Text(
-                      day.day.toString(),
-                      style: const TextStyle(
-                        color: Colors.black87,
-                      ),
-                    ),
+            SizedBox(
+              height: 400,
+              width: 350,
+              child: TableCalendar(
+                locale: 'ja_JP',
+                firstDay: DateTime.utc(2010, 10, 16),
+                lastDay: DateTime.utc(2030, 3, 14),
+                focusedDay: focusOnDay.focusedDay,
+                headerStyle: calenderHeaderStyle,
+                daysOfWeekHeight: 50,
+                rowHeight: 50,
+                calendarFormat: _calendarFormat,
+                selectedDayPredicate: (day) {
+                  return isSameDay(
+                    day,
+                    focusOnDay.selectedDay,
                   );
                 },
-                dowBuilder: (context, day) {
-                  final locale = Localizations.localeOf(context).languageCode;
-                  final dowText = const DaysOfWeekStyle()
-                          .dowTextFormatter
-                          ?.call(day, locale) ??
-                      DateFormat.E(locale).format(day);
+                onDaySelected: (selectedDay, focusedDay) {
+                  if (!isSameDay(focusOnDay.selectedDay, selectedDay)) {
+                    focusOnDay.updateSelectedDay(selectedDay);
+                    focusOnDay.updateFocusedDay(selectedDay);
+                    focusOnDay.updateRangeStart(null);
+                    focusOnDay.updateRangeEnd(null);
+                    _rangeSelectionMode = RangeSelectionMode.toggledOff;
+                  }
+                },
+                rangeSelectionMode: _rangeSelectionMode,
+                rangeStartDay: focusOnDay.rangeStart,
+                rangeEndDay: focusOnDay.rangeEnd,
+                onRangeSelected: (start, end, focusedDay) {
+                  focusOnDay.updateRangeStart(start);
+                  focusOnDay.updateRangeEnd(end);
+                  _rangeSelectionMode = RangeSelectionMode.toggledOn;
+                },
+                onPageChanged: focusOnDay.updateFocusedDay,
+                calendarBuilders: CalendarBuilders(
+                  defaultBuilder: (context, day, focusedDay) {
+                    return CalenderStyle(day, Colors.black87);
+                  },
+                  // なぜかここの指示が通らない
+                  todayBuilder: (context, day, focusedDay) {
+                    return AnimatedContainer(
+                      duration: const Duration(milliseconds: 250),
+                      margin: EdgeInsets.zero,
+                      decoration: BoxDecoration(
+                        border: Border.all(
+                          color: Colors.orange,
+                        ),
+                      ),
+                      alignment: Alignment.center,
+                      child: Text(
+                        day.day.toString(),
+                        style: const TextStyle(
+                          color: Colors.black87,
+                        ),
+                      ),
+                    );
+                  },
+                  dowBuilder: (context, day) {
+                    final locale = Localizations.localeOf(context).languageCode;
+                    final dowText = const DaysOfWeekStyle()
+                            .dowTextFormatter
+                            ?.call(day, locale) ??
+                        DateFormat.E(locale).format(day);
 
-                  return DowStyle(dowText);
-                },
-                disabledBuilder: (context, day, focusedDay) {
-                  return CalenderStyle(day, Colors.grey);
-                },
-                // 前の月末で今月に出てきてる日付とか
-                outsideBuilder: (context, day, focusedDay) {
-                  return CalenderStyle(day, Colors.grey);
-                },
+                    return DowStyle(dowText);
+                  },
+                  disabledBuilder: (context, day, focusedDay) {
+                    return CalenderStyle(day, Colors.grey);
+                  },
+                  // 前の月末で今月に出てきてる日付とか
+                  outsideBuilder: (context, day, focusedDay) {
+                    return CalenderStyle(day, Colors.grey);
+                  },
+                ),
               ),
             ),
             ElevatedButton(
