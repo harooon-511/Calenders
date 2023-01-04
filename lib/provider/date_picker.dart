@@ -5,13 +5,13 @@ final focusOnDayProvider =
     ChangeNotifierProvider((ref) => selectedDayController());
 
 class selectedDayController extends ChangeNotifier {
-  DateTime selectedDay = DateTime.now();
+  DateTime? selectedDay = DateTime.now();
   DateTime focusedDay = DateTime.now();
   DateTime? rangeStart = null;
   DateTime? rangeEnd = null;
   List pickedDateList = [];
 
-  void updateSelectedDay(DateTime value) {
+  void updateSelectedDay(DateTime? value) {
     selectedDay = value;
     notifyListeners();
   }
